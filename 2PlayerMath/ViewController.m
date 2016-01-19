@@ -7,17 +7,22 @@
 //
 
 #import "ViewController.h"
+#import "Player.h"
 
 @interface ViewController ()
 
+@property (strong, nonatomic) IBOutlet UILabel *playerStatusLabel;
 @property (strong, nonatomic) IBOutlet UILabel *displayLabel;
 @property (strong, nonatomic) NSMutableString *displayString;
 @property (assign, nonatomic) int number;
-@property (strong, nonatomic) NSString *player;
 @property (strong, nonatomic) NSString *operator;
+@property (assign, nonatomic) int unitPlace;
 @property (assign, nonatomic) int x;
 @property (assign, nonatomic) int y;
-
+@property (strong, nonatomic) NSMutableString *playerAnswerString;
+@property (assign, nonatomic) NSArray *players;
+@property (assign, nonatomic) int currentPlayer;
+@property (assign, nonatomic) BOOL currentPlayerIsPlayer1;
 
 @end
 
@@ -27,12 +32,12 @@
     return arc4random_uniform(19);
 }
 
-- (NSString *)playerSelector {
-    int r = arc4random_uniform(2);
-    if (r == 0) {
-        return @"Player 1";
+- (BOOL)switchPlayer {
+    if (self.currentPlayerIsPlayer1) {
+        return YES;
     }
-    return @"player 2";
+    return NO;
+    
 }
 
 - (NSString *)randomOperator {
@@ -77,53 +82,109 @@
     return NO;
 }
 
-- (BOOL)player1Check {
-    return YES;
-}
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.player = [self playerSelector];
+- (void)createNewQuestion {
+    Player *currentPlayer;
+    self.playerAnswerString = [@"?" mutableCopy];
     self.operator = [self randomOperator];
     self.x = [self randomNumber];
     self.y = [self randomNumber];
+    self.displayString = [NSMutableString stringWithFormat:@"%@: %d %@ %d = %@", currentPlayer.playerName, self.x, self.operator, self.y, self.playerAnswerString];
+
+
+}
+
+- (void)upDateAnswerLabel {
+    Player *currentPlayer = self.players[self.currentPlayer];
+    self.displayString = [NSMutableString stringWithFormat:@"%@: %d %@ %d = %@", currentPlayer.playerName, self.x, self.operator, self.y, self.playerAnswerString];
+    self.displayLabel.text = self.displayString;
     
-    int answer = [self doMathXVariable:self.x operation:self.operator yVariable:self.y];
+}
+
+- (BOOL)player1Check {
+    return YES;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.currentPlayer = 0;
     
-    NSString *answerPlaceHolder = @"?";
-    self.displayString = [NSMutableString stringWithFormat:@"%@: %d %@ %d = %@", self.player, self.x, self.operator, self.y, answerPlaceHolder];
+    [self createNewQuestion];
+    
+    self.playerAnswerString = [NSMutableString string];
+    
+    Player *player1 = [[Player alloc] init];
+    player1.playerName = @"Dude1";
+    
+    Player *player2 = [[Player alloc] init];
+    player2.playerName = @"Dude2";
+    
+    self.players = @[player1, player2];
+
 
 }
 
 - (IBAction)button1:(UIButton *)sender {
-    self.number = 1;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"1"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)button2:(UIButton *)sender {
-    self.number = 2;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"2"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)button3:(UIButton *)sender {
-    self.number = 3;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"3"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)button4:(UIButton *)sender {
-    self.number = 4;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"4"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)button5:(UIButton *)sender {
-    self.number = 5;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"5"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)button6:(UIButton *)sender {
-    self.number = 6;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"6"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)button7:(UIButton *)sender {
-    self.number = 7;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"7"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)button8:(UIButton *)sender {
-    self.number = 8;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"8"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)button9:(UIButton *)sender {
-    self.number = 9;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"9"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)button0:(UIButton *)sender {
-    self.number = 0;
+    self.playerAnswerString = [[self.playerAnswerString stringByAppendingString:@"0"] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 - (IBAction)buttonEnter:(UIButton *)sender {
+    int computerAnswer = [self doMathXVariable:self.x operation:self.operator yVariable:self.y];
+    int playerAnswer = [self.playerAnswerString intValue];
+    
+    BOOL result = [self answerCheckWithComptuer:computerAnswer checkWithPlayerAnswer:playerAnswer];
+    if (!result) {
+        Player *currentPlayer = self.players[self.currentPlayer];
+        currentPlayer.playerLifeLeft --;
+        
+    }
+    self.currentPlayer = (self.currentPlayer + 1) % self.players.count;
+    [self createNewQuestion];
+    
 }
 @end

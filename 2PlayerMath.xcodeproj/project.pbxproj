@@ -13,6 +13,7 @@
 		0AFEC7601C4D8F5F000B25F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0AFEC75E1C4D8F5F000B25F8 /* Main.storyboard */; };
 		0AFEC7621C4D8F5F000B25F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0AFEC7611C4D8F5F000B25F8 /* Assets.xcassets */; };
 		0AFEC7651C4D8F5F000B25F8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0AFEC7631C4D8F5F000B25F8 /* LaunchScreen.storyboard */; };
+		0AFEC76E1C4DB355000B25F8 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AFEC76D1C4DB355000B25F8 /* Player.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		0AFEC7611C4D8F5F000B25F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0AFEC7641C4D8F5F000B25F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0AFEC7661C4D8F5F000B25F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0AFEC76C1C4DB355000B25F8 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		0AFEC76D1C4DB355000B25F8 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +67,8 @@
 				0AFEC75C1C4D8F5F000B25F8 /* ViewController.m */,
 				0AFEC75E1C4D8F5F000B25F8 /* Main.storyboard */,
 				0AFEC7611C4D8F5F000B25F8 /* Assets.xcassets */,
+				0AFEC76C1C4DB355000B25F8 /* Player.h */,
+				0AFEC76D1C4DB355000B25F8 /* Player.m */,
 				0AFEC7631C4D8F5F000B25F8 /* LaunchScreen.storyboard */,
 				0AFEC7661C4D8F5F000B25F8 /* Info.plist */,
 				0AFEC7551C4D8F5F000B25F8 /* Supporting Files */,
@@ -149,6 +154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AFEC76E1C4DB355000B25F8 /* Player.m in Sources */,
 				0AFEC75D1C4D8F5F000B25F8 /* ViewController.m in Sources */,
 				0AFEC75A1C4D8F5F000B25F8 /* AppDelegate.m in Sources */,
 				0AFEC7571C4D8F5F000B25F8 /* main.m in Sources */,
