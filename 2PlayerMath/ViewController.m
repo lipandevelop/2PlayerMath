@@ -9,9 +9,14 @@
 #import "ViewController.h"
 #import "Player.h"
 
+#pragma Properties
+
 @interface ViewController ()
 
-@property (strong, nonatomic) IBOutlet UILabel *playerStatusLabel;
+@property (strong, nonatomic) IBOutlet UIImageView *player1HealthBar;
+@property (strong, nonatomic) IBOutlet UIImageView *player2HealthBar;
+@property (strong, nonatomic) IBOutlet UILabel *player1StatusLabel;
+@property (strong, nonatomic) IBOutlet UILabel *player2StatusLabel;
 @property (strong, nonatomic) IBOutlet UILabel *displayLabel;
 @property (strong, nonatomic) NSMutableString *displayString;
 @property (assign, nonatomic) int number;
@@ -20,11 +25,13 @@
 @property (assign, nonatomic) int x;
 @property (assign, nonatomic) int y;
 @property (strong, nonatomic) NSMutableString *playerAnswerString;
-@property (assign, nonatomic) NSArray *players;
+@property (strong, nonatomic) NSArray *players;
 @property (assign, nonatomic) int currentPlayer;
 @property (assign, nonatomic) BOOL currentPlayerIsPlayer1;
 
 @end
+
+#pragma Functions
 
 @implementation ViewController
 
@@ -32,13 +39,18 @@
     return arc4random_uniform(19);
 }
 
-- (BOOL)switchPlayer {
-    if (self.currentPlayerIsPlayer1) {
-        return YES;
+- (void)playerHealthBarAlpha: (UIImageView *)healthBarAlpha lifeInt: (int)lifeLeft {
+    if (lifeLeft == 3) {
+        healthBarAlpha.alpha = 0.80;
     }
-    return NO;
-    
+    if (lifeLeft == 2) {
+        healthBarAlpha.alpha = 0.50;
+    }
+    if (lifeLeft == 1) {
+        healthBarAlpha.alpha = 0.25;
+    }
 }
+
 
 - (NSString *)randomOperator {
     int r = arc4random_uniform(3);
@@ -50,7 +62,7 @@
         operation = @"-";
     }
     if (r == 2) {
-        operation = @"*";
+        operation = @"X";
     }
     if (r == 3) {
         operation = @"/";
@@ -83,19 +95,17 @@
 }
 
 - (void)createNewQuestion {
-    Player *currentPlayer;
-    self.playerAnswerString = [@"?" mutableCopy];
+    self.playerAnswerString = [@"" mutableCopy];
     self.operator = [self randomOperator];
     self.x = [self randomNumber];
     self.y = [self randomNumber];
-    self.displayString = [NSMutableString stringWithFormat:@"%@: %d %@ %d = %@", currentPlayer.playerName, self.x, self.operator, self.y, self.playerAnswerString];
-
-
+    [self upDateAnswerLabel];
 }
 
 - (void)upDateAnswerLabel {
-    Player *currentPlayer = self.players[self.currentPlayer];
-    self.displayString = [NSMutableString stringWithFormat:@"%@: %d %@ %d = %@", currentPlayer.playerName, self.x, self.operator, self.y, self.playerAnswerString];
+    NSLog(@"%lu",(unsigned long)self.players.count);
+    Player *cPlayer = self.players[self.currentPlayer];
+    self.displayString = [NSMutableString stringWithFormat:@"%@:\n %d %@ %d = %@", cPlayer.playerName, self.x, self.operator, self.y, self.playerAnswerString];
     self.displayLabel.text = self.displayString;
     
 }
@@ -104,23 +114,53 @@
     return YES;
 }
 
+- (void) upDateStatusLabel {
+
+    Player *player1 = self.players[0];
+    Player *player2 = self.players[1];
+    
+    NSMutableString *player1StatusString = [NSMutableString stringWithFormat:@"%@: %d", player1.playerName, player1.playerLifeLeft];
+    [self playerHealthBarAlpha:self.player1HealthBar lifeInt:player1.playerLifeLeft];
+    
+    NSMutableString *player2StatusString = [NSMutableString stringWithFormat:@"%@: %d", player2.playerName, player2.playerLifeLeft];
+    [self playerHealthBarAlpha:self.player2HealthBar lifeInt:player2.playerLifeLeft];
+    
+    [self upDateAnswerLabel];
+    
+    self.player1StatusLabel.text = player1StatusString;
+    
+    self.player2StatusLabel.text = player2StatusString;
+}
+
+#pragma viewDidLoad
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.currentPlayer = 0;
-    
-    [self createNewQuestion];
-    
-    self.playerAnswerString = [NSMutableString string];
     
     Player *player1 = [[Player alloc] init];
     player1.playerName = @"Dude1";
     
     Player *player2 = [[Player alloc] init];
     player2.playerName = @"Dude2";
+
+    [self createNewQuestion];
     
     self.players = @[player1, player2];
+    [self upDateStatusLabel];
 
 
+
+}
+- (IBAction)backButton:(UIButton *)sender {
+    self.playerAnswerString = [[self.playerAnswerString stringByDeletingLastPathComponent] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
+}
+
+- (IBAction)buttonNegative:(UIButton *)sender {
+    self.playerAnswerString = [[@"-" stringByAppendingString:self.playerAnswerString] mutableCopy];
+    NSLog(@"%@", self.playerAnswerString);
+    [self upDateAnswerLabel];
 }
 
 - (IBAction)button1:(UIButton *)sender {
@@ -181,6 +221,7 @@
     if (!result) {
         Player *currentPlayer = self.players[self.currentPlayer];
         currentPlayer.playerLifeLeft --;
+        [self upDateStatusLabel];
         
     }
     self.currentPlayer = (self.currentPlayer + 1) % self.players.count;
